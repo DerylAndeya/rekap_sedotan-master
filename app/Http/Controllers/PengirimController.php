@@ -12,11 +12,16 @@ class PengirimController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Pengirim::all();
-        return view('pengirim/home')->with('pengirim', $data);
+        if ($request){
 
+            $data=Pengirim::search($request->search)->paginate(10);
+            return view('pengirim/home')->with('items', $data);
+
+        }
+        $data = Pengirim::paginate(10);
+        return view('pengirim/home')->with('items', $data);
     }
 
     /**

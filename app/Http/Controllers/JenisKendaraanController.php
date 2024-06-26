@@ -10,11 +10,16 @@ class JenisKendaraanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = jenis_kendaraan::all();
+        if ($request){
 
-        return view('jenis_kendaraan/home')->with('jenis_kendaraan', $data);
+            $data=jenis_kendaraan::search($request->search)->paginate(10);
+            return view('jenis_kendaraan/home')->with('items', $data);
+
+        }
+        $data = jenis_kendaraan::paginate(10);
+        return view('jenis_kendaraan/home')->with('items', $data);
     }
 
     /**

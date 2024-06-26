@@ -17,12 +17,16 @@ class TandaTerimaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = TandaTerima::all();
+        if ($request){
 
-        return view('tanda_terima/home')->with('tanda_terima', $data);
+            $data=TandaTerima::search($request->search)->paginate(10);
+            return view('tanda_terima/home')->with('items', $data);
 
+        }
+        $data = TandaTerima::paginate(10);
+        return view('tanda_terima/home')->with('items', $data);
     }
 
     /**

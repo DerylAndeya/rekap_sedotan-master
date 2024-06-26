@@ -12,11 +12,17 @@ class BankController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Bank::all();
+        if ($request){
 
-        return view('bank/home')->with('bank', $data);
+            $data=Bank::search($request->search)->paginate(10);
+
+            return view('bank/home')->with('items', $data);
+
+        }
+        $data = Bank::paginate(10);
+        return view('bank/home')->with('items', $data);
     }
 
     /**

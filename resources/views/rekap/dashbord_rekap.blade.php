@@ -38,7 +38,7 @@
                             {{ number_format($percentageChange, 2) }}%
                         </div>
 
-                        <div class="detail-value">Rp {{ $today }}</div>
+                        <div class="detail-value">@money($today)</div>
                         <div class="detail-name">Today</div>
                     </div>
                     <div class="statistic-details-item">
@@ -54,7 +54,7 @@
                             {{ number_format($percentageChange, 2) }}%
                         </div>
 
-                        <div class="detail-value">Rp {{ $week }}</div>
+                        <div class="detail-value">@money($week) </div>
                         <div class="detail-name">This Week</div>
                     </div>
                     <div class="statistic-details-item">
@@ -70,7 +70,7 @@
                             </span>
                             {{ number_format($percentageChange, 2) }}%
                         </div>
-                        <div class="detail-value">Rp {{ $month }}</div>
+                        <div class="detail-value"> @money($month) </div>
                         <div class="detail-name">This Month</div>
                     </div>
                     <div class="statistic-details-item">
@@ -85,7 +85,7 @@
                             </span>
                             {{ number_format($percentageChange, 2) }}%
                         </div>
-                        <div class="detail-value">Rp {{ $year }}</div>
+                        <div class="detail-value"> @money($year) </div>
                         <div class="detail-name">This Year</div>
                     </div>
                 </div>

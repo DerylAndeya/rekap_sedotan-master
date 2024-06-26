@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Bank;
 use App\Models\Invoice;
-use App\Models\MetodePembayaran;
 use App\Models\Pegawai;
 use App\Models\Pemesan;
 use Illuminate\Http\Request;
@@ -19,22 +18,27 @@ class InvoiceController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
-    {
-        $data = Invoice::all();
-        return view('invoice/home')->with('invoice', $data);
-    }
+     public function index(Request $request)
+     {
+         if ($request){
+
+             $data=Invoice::search($request->search)->paginate(10);
+             return view('invoice/home')->with('items', $data);
+
+         }
+         $data = Invoice::paginate(10);
+         return view('invoice/home')->with('items', $data);
+     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $metode_pembayaran = MetodePembayaran::all();
         $bank = Bank::all();
         $pegawai = Pegawai::all();
         $pemesan = Pemesan::all();
-        return view('invoice/form_create')->with(['mps' => $metode_pembayaran, 'banks' => $bank, 'pegawais' => $pegawai, 'pemesans' => $pemesan]);
+        return view('invoice/form_create')->with(['banks' => $bank, 'pegawais' => $pegawai, 'pemesans' => $pemesan]);
     }
 
     /**
@@ -45,7 +49,7 @@ class InvoiceController extends Controller
 
         $validated_data = $request->validate([
             'tanggal' => 'required|date|date_format:Y-m-d|after_or_equal:' . Carbon::today()->format('Y-m-d'),
-            'FK_metode_pembayaran' => 'required',
+            'is_cash' => 'required|boolean',
             'FK_bank' => 'required',
             'FK_pegawai' => 'required',
             'FK_pemesan' => 'required',
@@ -80,11 +84,10 @@ class InvoiceController extends Controller
      */
     public function edit(Invoice $invoice)
     {
-        $metode_pembayaran = MetodePembayaran::all();
         $bank = Bank::all();
         $pegawai = Pegawai::all();
         $pemesan = Pemesan::all();
-        return view('invoice/form_edit')->with(['mps' => $metode_pembayaran, 'invoice' => $invoice, 'banks' => $bank, 'pegawais' => $pegawai, 'pemesans' => $pemesan]);
+        return view('invoice/form_edit')->with(['invoice' => $invoice, 'banks' => $bank, 'pegawais' => $pegawai, 'pemesans' => $pemesan]);
     }
 
     /**
@@ -94,11 +97,11 @@ class InvoiceController extends Controller
     {
 
         $validatedData = $request->validate([
-        'tanggal' => 'required|date|date_format:Y-m-d|after_or_equal:' . Carbon::today()->format('Y-m-d'),
-        'FK_metode_pembayaran' => 'required|exists:metode_pembayaran,id',
-        'FK_bank' => 'required|exists:bank,id',
-        'FK_pegawai' => 'required|exists:users,id',
-        'FK_pemesan' => 'required|exists:pemesan,id',
+            'tanggal' => 'required|date|date_format:Y-m-d|after_or_equal:' . Carbon::today()->format('Y-m-d'),
+            'is_cash' => 'required|boolean',
+            'FK_bank' => 'required|exists:bank,id',
+            'FK_pegawai' => 'required|exists:users,id',
+            'FK_pemesan' => 'required|exists:pemesan,id',
         ]);
 
         $invoice->update($validatedData);
@@ -118,7 +121,7 @@ class InvoiceController extends Controller
 
     public function exportToExcel()
     {
-        $users = Invoice::where('isDeleted', false)->get();
+        $users = Invoice::all();
 
         $spreadsheet = new Spreadsheet();
 
@@ -127,12 +130,12 @@ class InvoiceController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
-        $sheet->setCellValue('A1', 'nomor invoice');
-        $sheet->setCellValue('B1', 'tanggal');
-        $sheet->setCellValue('C1', 'metode pembayaran');
-        $sheet->setCellValue('D1', 'bank');
-        $sheet->setCellValue('E1', 'pegawai');
-        $sheet->setCellValue('F1', 'pemesan');
+        $sheet->setCellValue('A1', 'Nomor Invoice');
+        $sheet->setCellValue('B1', 'Tanggal');
+        $sheet->setCellValue('C1', 'Metode Pembayaran');
+        $sheet->setCellValue('D1', 'Bank');
+        $sheet->setCellValue('E1', 'Pegawai');
+        $sheet->setCellValue('F1', 'Pemesan');
 
 
         // Populate data
@@ -140,7 +143,7 @@ class InvoiceController extends Controller
         foreach ($users as $user) {
             $sheet->setCellValue('A' . $row, $user->nomor_invoice);
             $sheet->setCellValue('B' . $row, $user->tanggal);
-            $sheet->setCellValue('C' . $row, $user->metode_pembayaran['nama_metode']);
+            $sheet->setCellValue('C' . $row, $user->is_cash ? 'Cash' : 'Transfer');
             $sheet->setCellValue('D' . $row, $user->bank['nama_bank']);
             $sheet->setCellValue('E' . $row, $user->pegawai['nama_pegawai']);
             $sheet->setCellValue('F' . $row, $user->pemesan['nama_pemesan']);

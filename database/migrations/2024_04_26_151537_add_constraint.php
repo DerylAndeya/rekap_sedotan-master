@@ -14,7 +14,6 @@ return new class extends Migration
 
         Schema::table('invoice', function (Blueprint $table) {
             // Add a foreign key constraint
-            $table->foreign('FK_metode_pembayaran')->references('id')->on('metode_pembayaran');
             $table->foreign('FK_bank')->references('id')->on('bank');
             $table->foreign('FK_pemesan')->references('id')->on('pemesan');
             $table->foreign('FK_pegawai')->references('id')->on('users');
@@ -44,7 +43,6 @@ return new class extends Migration
     {
 
         Schema::table('invoice', function (Blueprint $table) {
-            $table->dropForeign(['FK_metode_pembayaran']);
             $table->dropForeign(['FK_bank']);
             $table->dropForeign(['FK_pegawai']);
             $table->dropForeign(['FK_pemesan']);

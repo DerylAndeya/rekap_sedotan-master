@@ -12,12 +12,16 @@ class PenerimaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Penerima::all();
+        if ($request){
 
-        return view('penerima/home')->with('penerima', $data);
+            $data=Penerima::search($request->search)->paginate(10);
+            return view('penerima/home')->with('items', $data);
 
+        }
+        $data = Penerima::paginate(10);
+        return view('penerima/home')->with('items', $data);
     }
 
     /**

@@ -10,11 +10,16 @@ class PegawaiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Pegawai::all();
+        if ($request){
 
-        return view('pegawai/home')->with('pegawai', $data);
+            $data=Pegawai::search($request->search)->paginate(10);
+            return view('pegawai/home')->with('items', $data);
+
+        }
+        $data = Pegawai::paginate(10);
+        return view('pegawai/home')->with('items', $data);
     }
 
     /**

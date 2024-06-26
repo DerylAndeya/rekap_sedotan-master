@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title','Dashboard')
-
+@section('dynamicRoute')
+    {{ route('barang.index') }}
+@endsection
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -27,8 +29,8 @@
                       </tr>
                   </thead>
                   <tbody>
-                      @isset($bank)
-                          @foreach ($bank as $b)
+                      @isset($items)
+                          @foreach ($items as $b)
                               <tr>
                                   <td>{{$b->id}}</td>
                                   <td>{{$b->nama_bank}}</td>
@@ -49,7 +51,7 @@
               </div>
             </div>
           </div>
-
+          @include('layouts.pagination')
         </div>
     </section>
 @endsection

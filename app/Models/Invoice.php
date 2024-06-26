@@ -9,14 +9,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Invoice extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table="invoice";
-    protected $guarded=[];
-
-    public function metode_pembayaran()
+    protected $table = "invoice";
+    protected $guarded = [];
+    protected static $searchableColumns = ['nomor_invoice', 'tanggal', 'is_cash', 'FK_bank', 'FK_pegawai', 'FK_pemesan'];
+    public static function search($term)
     {
-        return $this->belongsTo(MetodePembayaran::class, 'FK_metode_pembayaran', 'id');
-    }
+        $query = self::query();
 
+        foreach (self::$searchableColumns as $column) {
+            $query->orWhere($column, 'like', '%' . $term . '%');
+        }
+
+        return $query;
+    }
     public function bank()
     {
         return $this->belongsTo(Bank::class, 'FK_bank', 'id');

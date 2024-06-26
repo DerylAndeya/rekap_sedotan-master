@@ -10,7 +10,6 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\DetailRekapController;
 use App\Http\Controllers\PengirimController;
 use App\Http\Controllers\PenerimaController;
-use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\TandaTerimaController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\UserController;
@@ -33,7 +32,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('bank', BankController::class)->middleware(Admin::class);
     Route::resource('pengirim', PengirimController::class)->middleware(Admin::class);
     Route::resource('penerima', PenerimaController::class)->middleware(Admin::class);
-    Route::resource('metode_pembayaran', MetodePembayaranController::class)->middleware(Admin::class);
     Route::resource('tanda_terima', TandaTerimaController::class)->middleware(Admin::class);
     Route::get('/export_invoice', [InvoiceController::class, 'exportToExcel'])->name('invoice.export');
     Route::get('/rekap_penjualan', [RekapController::class, 'index'])->name('rekap.index');

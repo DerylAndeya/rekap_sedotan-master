@@ -4,7 +4,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-        <h1>Form Penerima</h1>
+        <h1>Form Edit Penerima</h1>
         </div>
 
         <div class="section-body">

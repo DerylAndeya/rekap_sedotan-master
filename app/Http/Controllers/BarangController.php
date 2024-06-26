@@ -10,10 +10,16 @@ class BarangController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Barang::all();
-        return view('barangs/home')->with('barangs', $data);
+        if ($request){
+
+            $data=Barang::search($request->search)->paginate(10);
+            return view('barangs/home')->with('items', $data);
+
+        }
+        $data = Barang::paginate(10);
+        return view('barangs/home')->with('items', $data);
     }
 
     public function create()

@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
-
+@section('dynamicRoute')
+    {{ route('barang.index') }}
+@endsection
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -33,12 +35,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @isset($invoice)
-                                    @foreach ($invoice as $i)
+                                @isset($items)
+                                    @foreach ($items as $i)
                                         <tr>
                                             <td>{{ $i->nomor_invoice }}</td>
                                             <td>{{ $i->tanggal}}</td>
-                                            <td>{{ $i->metode_pembayaran->nama_metode }}</td>
+                                            <td>{{ $i->is_cash ? 'Cash' : 'Transfer' }}</td>
                                             <td>{{ $i->bank->nama_bank }}</td>
                                             <td>{{ $i->pegawai->name }}</td>
                                             <td>{{ $i->pemesan->nama_pemesan }}</td>
@@ -62,9 +64,8 @@
                     </div>
                 </div>
             </div>
-
+            @include('layouts.pagination')
         </div>
     </section>
 @endsection
-
 

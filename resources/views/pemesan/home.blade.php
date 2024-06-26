@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title','Dashboard')
-
+@section('dynamicRoute')
+    {{ route('barang.index') }}
+@endsection
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -30,8 +32,8 @@
                       </tr>
                   </thead>
                   <tbody>
-                      @isset($pemesan)
-                          @foreach ($pemesan as $p)
+                      @isset($items)
+                          @foreach ($items as $p)
                               <tr>
                                   <td>{{$p->id}}</td>
                                   <td>{{$p->nama_pemesan}}</td>

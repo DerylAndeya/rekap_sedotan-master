@@ -11,4 +11,15 @@ class Pengirim extends Model
     use HasFactory, SoftDeletes;
     protected $table="pengirim";
     protected $guarded=[];
+    protected static $searchableColumns = ['nama_pengirim'];
+    public static function search($term)
+    {
+        $query = self::query();
+
+        foreach (self::$searchableColumns as $column) {
+            $query->orWhere($column, 'like', '%' . $term . '%');
+        }
+
+        return $query;
+    }
 }

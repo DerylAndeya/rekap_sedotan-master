@@ -10,11 +10,16 @@ class PemesanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Pemesan::all();
+        if ($request){
 
-        return view('pemesan/home')->with('pemesan', $data);
+            $data=Pemesan::search($request->search)->paginate(10);
+            return view('pemesan/home')->with('items', $data);
+
+        }
+        $data = Pemesan::paginate(10);
+        return view('pemesan/home')->with('items', $data);
     }
 
     /**

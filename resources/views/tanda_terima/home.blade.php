@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
-
+@section('dynamicRoute')
+    {{ route('barang.index') }}
+@endsection
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -32,8 +34,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @isset($tanda_terima)
-                                    @foreach ($tanda_terima as $tt)
+                                @isset($items)
+                                    @foreach ($items as $tt)
                                         <tr>
                                             <td>{{ $tt->FK_kode_invoice }}</td>
                                             <td>{{ $tt->tanggal }}</td>
@@ -60,7 +62,7 @@
                     </div>
                 </div>
             </div>
-
+            @include('layouts.pagination')
         </div>
     </section>
 @endsection

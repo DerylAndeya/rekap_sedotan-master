@@ -47,7 +47,7 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_invoice');
             $table->date('tanggal');
-            $table->unsignedBigInteger('FK_metode_pembayaran');
+            $table->boolean('is_cash'); // 1(true) = cash, 0(false) = transfer
             $table->unsignedBigInteger('FK_bank');
             $table->unsignedBigInteger('FK_pegawai');
             $table->unsignedBigInteger('FK_pemesan');
@@ -60,13 +60,6 @@ return new class extends Migration
             $table->unsignedBigInteger('FK_kode_invoice');
             $table->unsignedBigInteger('FK_kode_barang');
             $table->integer('jumlah');
-            $table->softDeletes();
-            $table->timestamps();
-        });
-
-        Schema::create('metode_pembayaran', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_metode');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -118,7 +111,6 @@ return new class extends Migration
         Schema::dropIfExists('pegawai');
         Schema::dropIfExists('invoice');
         Schema::dropIfExists('transaksi');
-        Schema::dropIfExists('metode_pembayaran');
         Schema::dropIfExists('bank');
         Schema::dropIfExists('pengirim');
         Schema::dropIfExists('pengirim');

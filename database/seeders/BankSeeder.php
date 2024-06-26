@@ -14,8 +14,10 @@ class BankSeeder extends Seeder
     public function run(): void
     {
         DB::table('bank')->insert([
+            'nama_bank' => '-',
+        ]);
+        DB::table('bank')->insert([
             'nama_bank' => 'BCA',
         ]);
-
     }
 }

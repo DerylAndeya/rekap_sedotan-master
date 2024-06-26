@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(add_barang_default::class);
         $this->call(add_pemesan::class);
         $this->call(BankSeeder::class);
-        $this->call(MetodePembayaranSeeder::class);
         $this->call(UserSeeder::class);
     }
 }

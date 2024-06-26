@@ -7,6 +7,8 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DetailRekapController extends Controller
 {
@@ -92,5 +94,61 @@ class DetailRekapController extends Controller
 
         $currentYear = $year;
         return view('detailrekap.showChoosen', compact('invoices', 'data', 'totalHarga', 'currentYear', 'total'));
+    }
+    public function exportToExcel()
+    {
+        $invoices = Invoice::all();
+
+        $spreadsheet = new Spreadsheet();
+
+        // Set active sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set headers
+        $sheet->setCellValue('A1', 'Nomor Invoice');
+        $sheet->setCellValue('B1', 'Pemesan');
+        $sheet->setCellValue('C1', 'Tanggal');
+        $sheet->setCellValue('D1', 'Nama Barang');
+        $sheet->setCellValue('E1', 'Harga');
+        $sheet->setCellValue('F1', 'Jumlah');
+        $sheet->setCellValue('G1', 'Sub-Total');
+        $sheet->setCellValue('H1', 'Total');
+
+        // Populate data
+        $row = 2;
+        foreach ($invoices as $invoice) {
+            $transactions = DB::table('transaksi')
+                ->join('barang', 'barang.id', '=', 'transaksi.fk_kode_barang')
+                ->select('barang.nama_barang', 'barang.harga', 'transaksi.jumlah', DB::raw('(jumlah * barang.harga) as sub_total'))
+                ->where('fk_kode_invoice', $invoice->id)
+                ->get();
+
+            foreach ($transactions as $transaction) {
+                $sheet->setCellValue('A' . $row, $invoice->nomor_invoice);
+                $sheet->setCellValue('B' . $row, $invoice->pemesan['nama_pemesan']);
+                $sheet->setCellValue('C' . $row, $invoice->tanggal);
+                $sheet->setCellValue('D' . $row, $transaction->nama_barang);
+                $sheet->setCellValue('E' . $row, $transaction->harga);
+                $sheet->setCellValue('F' . $row, $transaction->jumlah);
+                $sheet->setCellValue('G' . $row, $transaction->sub_total);
+                $row++;
+            }
+
+            $sheet->setCellValue('H' . ($row - count($transactions)), $invoice->total);
+        }
+
+        // Set headers for download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $date = date('Y-m-d_H-i-s');
+        $filename = 'Invoice_' . $date . '.xlsx';
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        // Create Excel writer
+        $writer = new Xlsx($spreadsheet);
+
+        // Save the file to output
+        $writer->save('php://output');
     }
 }

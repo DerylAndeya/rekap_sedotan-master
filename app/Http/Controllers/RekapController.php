@@ -29,65 +29,57 @@ class RekapController extends Controller
         }
 
         // Get the current date components
-        $currentYear = date('Y');
         $currentMonth = date('m');
         $currentDay = date('Y-m-d');
 
         // Determine the start date for filtering invoices based on the input
+        $invoiceIds = DB::table('invoice');
         switch ($countByWhat) {
             case 'Y':
                 // For year, start from January 1st of the current year
-                $startDate = $currentYear . '-01-01';
+                $invoiceIds->where(DB::raw('YEAR(tanggal)'), '=', $this->currentYear);
                 break;
             case 'M':
                 // For month, start from the 1st of the current month
-                $startDate = $currentYear . '-' . $currentMonth . '-01';
+                $invoiceIds->where(DB::raw('YEAR(tanggal)'), '=', $this->currentYear)
+                    ->where(DB::raw('MONTH(tanggal)'), '=', $currentMonth);
                 break;
             case 'D':
                 // For day, start from the current day
-                $startDate = $currentDay;
+                $invoiceIds->where('tanggal', $currentDay);
                 break;
             case 'W':
                 // For week, start from the Monday of the current week
-                $startDate = date('Y-m-d', strtotime('monday this week'));
+                // $startDate = date('Y-m-d', strtotime('monday this week'));
                 break;
             case 'LY':
                 // For last year, start from January 1st of the previous year
-                $startDate = ($currentYear - 1) . '-01-01';
+                $invoiceIds->where(DB::raw('YEAR(tanggal)'), '=', $this->currentYear - 1);
                 break;
             case 'LYM':
                 // For last year's same month, start from the 1st of the same month last year
-                $startDate = ($currentYear - 1) . '-' . $currentMonth . '-01';
+                $invoiceIds->where(DB::raw('YEAR(tanggal)'), '=', $this->currentYear - 1)
+                    ->where(DB::raw('MONTH(tanggal)'), '=', $currentMonth);
                 break;
             case 'YD':
                 // For yesterday, start from the previous day
-                $startDate = date('Y-m-d', strtotime('-1 day'));
+                $invoiceIds->where('tanggal', date('Y-m-d', strtotime('-1 day')));
                 break;
             case 'LW':
                 // For last week, start from the Monday of the previous week
-                $startDate = date('Y-m-d', strtotime('monday last week'));
+                // $startDate = date('Y-m-d', strtotime('monday last week'));
                 break;
         }
 
+        $invoiceIds = $invoiceIds->get()->pluck('id');
 
-        $invoiceIds = DB::table('invoice')
-            ->where('tanggal', '>=', $startDate)
-            ->pluck('id');
-
-
-        $data = DB::table('transaksi')
-            ->whereIn('FK_kode_invoice', $invoiceIds)
-            ->get();
+        $data = Transaksi::whereIn('FK_kode_invoice', $invoiceIds)->get();
 
 
         $totalRevenue = 0;
         foreach ($data as $transaction) {
-            $barang = DB::table('barang')->where('id', $transaction->FK_kode_barang)->first();
-            if ($barang) {
-                $totalRevenue += $barang->harga * $transaction->jumlah;
-            }
+            $totalRevenue += $transaction->barang->harga * $transaction->jumlah;
         }
-
 
         return $totalRevenue;
     }
@@ -142,25 +134,18 @@ class RekapController extends Controller
     //
     public function totalOrders()
     {
-        $today = now()->toDateString();
-        $data = Invoice::where('tanggal', $today)->get()->count();
-        return $data;
+        return Invoice::where('tanggal', now()->toDateString())->get()->count();
     }
 
     public function balance()
     {
-        $today = now()->toDateString();
-        $invoices = Invoice::whereDate('tanggal', [$today])->get();
-        $invoice_ids = $invoices->pluck('id');
+        $invoiceIds = Invoice::whereDate('tanggal', now()->toDateString())->get()->pluck('id');
 
-        $transaksi = Transaksi::whereIn('FK_kode_invoice', $invoice_ids)->with('barang')->get();
+        $transaksi = Transaksi::whereIn('FK_kode_invoice', $invoiceIds)->get();
         $totalRevenue = 0;
 
         foreach ($transaksi as $transaction) {
-            $barang = DB::table('barang')->where('id', $transaction->FK_kode_barang)->first();
-            if ($barang) {
-                $totalRevenue += $barang->harga * $transaction->jumlah;
-            }
+            $totalRevenue += $transaction->barang->harga * $transaction->jumlah;
         }
 
         return $totalRevenue;
@@ -168,20 +153,14 @@ class RekapController extends Controller
 
     public function sales()
     {
-        $today = now()->toDateString();
-        $invoices = Invoice::whereDate('tanggal', [$today])->get();
-        $invoice_ids = $invoices->pluck('id');
+        $invoiceIds = Invoice::where('tanggal', now()->toDateString())->get()->pluck('id');
 
-        $transaksi = Transaksi::whereIn('FK_kode_invoice', $invoice_ids)->with('barang')->get();
+        $transaksi = Transaksi::whereIn('FK_kode_invoice', $invoiceIds)->get();
         $totalSales = 0;
 
         foreach ($transaksi as $transaction) {
-            $barang = DB::table('barang')->where('id', $transaction->FK_kode_barang)->first();
-            if ($barang) {
-                $totalSales += $transaction->jumlah;
-            }
+            $totalSales += $transaction->jumlah;
         }
-
         return $totalSales;
     }
 
