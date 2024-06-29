@@ -60,7 +60,7 @@ class DetailRekapController extends Controller
         }
 
         $currentYear = $this->currentYear;
-        return view('detailrekap.showChoosen', compact('invoices', 'data', 'totalHarga', 'currentYear', 'total'));
+        return view('detailrekap.showChoosen', compact('invoices', 'data', 'totalHarga', 'currentYear', 'total','monthNumber'));
     }
 
     public function getInvoiceAnnually($year)
@@ -95,13 +95,15 @@ class DetailRekapController extends Controller
         $currentYear = $year;
         return view('detailrekap.showChoosen', compact('invoices', 'data', 'totalHarga', 'currentYear', 'total'));
     }
-    public function exportToExcel()
+
+
+    public function exportToExcel(Request $request)
     {
-        $invoices = Invoice::all();
+
+        $invoices = Invoice::whereMonth('tanggal', $request->month)->get();
 
         $spreadsheet = new Spreadsheet();
 
-        // Set active sheet
         $spreadsheet->setActiveSheetIndex(0);
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -115,33 +117,30 @@ class DetailRekapController extends Controller
         $sheet->setCellValue('G1', 'Sub-Total');
         $sheet->setCellValue('H1', 'Total');
 
-        // Populate data
         $row = 2;
-        foreach ($invoices as $invoice) {
-            $transactions = DB::table('transaksi')
-                ->join('barang', 'barang.id', '=', 'transaksi.fk_kode_barang')
-                ->select('barang.nama_barang', 'barang.harga', 'transaksi.jumlah', DB::raw('(jumlah * barang.harga) as sub_total'))
-                ->where('fk_kode_invoice', $invoice->id)
-                ->get();
 
-            foreach ($transactions as $transaction) {
-                $sheet->setCellValue('A' . $row, $invoice->nomor_invoice);
-                $sheet->setCellValue('B' . $row, $invoice->pemesan['nama_pemesan']);
-                $sheet->setCellValue('C' . $row, $invoice->tanggal);
-                $sheet->setCellValue('D' . $row, $transaction->nama_barang);
-                $sheet->setCellValue('E' . $row, $transaction->harga);
-                $sheet->setCellValue('F' . $row, $transaction->jumlah);
-                $sheet->setCellValue('G' . $row, $transaction->sub_total);
+        foreach ($invoices as $ivc) {
+            $transaksiTiapInvoice = Transaksi::where('fk_kode_invoice', $ivc['id'])->get();
+            $total = 0;
+            foreach ($transaksiTiapInvoice as $transaksi) {
+                $subTotal = $transaksi->jumlah * $transaksi->barang->harga;
+                $total += $subTotal;
+                $sheet->setCellValue('A' . $row, $ivc->nomor_invoice);
+                $sheet->setCellValue('B' . $row, $ivc->pemesan->nama_pemesan);
+                $sheet->setCellValue('C' . $row, $ivc->tanggal);
+                $sheet->setCellValue('D' . $row, $transaksi->barang->nama_barang);
+                $sheet->setCellValue('E' . $row, $transaksi->barang->harga);
+                $sheet->setCellValue('F' . $row, $transaksi->jumlah);
+                $sheet->setCellValue('G' . $row, $subTotal);
+                $sheet->setCellValue('H' . $row, $total);
                 $row++;
             }
-
-            $sheet->setCellValue('H' . ($row - count($transactions)), $invoice->total);
+            $row++;
         }
 
-        // Set headers for download
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $date = date('Y-m-d_H-i-s');
-        $filename = 'Invoice_' . $date . '.xlsx';
+        $date = date('Y-M');
+        $filename = 'InvoiceBulanan_' . $date . '.xlsx';
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
 

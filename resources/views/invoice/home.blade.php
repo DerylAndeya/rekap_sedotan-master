@@ -16,7 +16,6 @@
                     <h4>LIST INVOICE</h4>
                     <div class="card-header-action">
                         <a href="{{ route('invoice.create') }}" class="btn btn-primary">Tambah Baru</a>
-                        <a href="{{ route('invoice.export') }}" class="btn btn-primary">Export</a>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -68,4 +67,3 @@
         </div>
     </section>
 @endsection
-

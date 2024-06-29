@@ -11,7 +11,7 @@
 
                 <h4> {{$currentYear}} </h4>
                 <div class="card-header-action">
-                    <a href="{{ route('invoice.export') }}" class="btn btn-primary">Export</a>
+                    <a href="{{ route('rekap.export',$monthNumber) }}" class="btn btn-primary">Export</a>
                 </div>
             </div>
             <div class="card-body">

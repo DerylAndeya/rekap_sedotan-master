@@ -21,11 +21,6 @@
             <div class="d-sm-none d-lg-inline-block">Hi, {{ Auth::user()->name }}</div>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-
-            <a href="#" class="dropdown-item has-icon">
-                <i class="far fa-user"></i> Profile
-            </a>
-
             <div class="dropdown-divider"></div>
             <a href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();"
                 class="dropdown-item has-icon text-danger">

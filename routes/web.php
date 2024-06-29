@@ -33,11 +33,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pengirim', PengirimController::class)->middleware(Admin::class);
     Route::resource('penerima', PenerimaController::class)->middleware(Admin::class);
     Route::resource('tanda_terima', TandaTerimaController::class)->middleware(Admin::class);
-    Route::get('/export_invoice', [InvoiceController::class, 'exportToExcel'])->name('invoice.export');
+    Route::get('/export_invoice/{month}', [InvoiceController::class, 'exportToExcel'])->name('invoice.export')->middleware(Owner::class);
     Route::get('/rekap_penjualan', [RekapController::class, 'index'])->name('rekap.index');
     Route::resource('user', UserController::class)->middleware(Owner::class);
-    Route::get('/rekap_tiap_bulan', [RekapController::class, 'indexPerBulan'])->name('monthly.index');
+    Route::get('/rekap_tiap_bulan', [RekapController::class, 'indexPerBulan'])->name('monthly.index')->middleware(Owner::class);
     Route::get('/rekap_tiap_tahun', [RekapController::class, 'indexPerTahun'])->name('annually.index');
     Route::get('/rekap_tiap_bulan/{month}', [DetailRekapController::class, 'getInvoiceAndTransactions'])->name('monthly');
-    Route::get('/rekap_tiap_tahun/{year}', [DetailRekapController::class, 'getInvoiceAnnually'])->name('annually');
+    Route::get('/rekap_tiap_tahun/{year}', [DetailRekapController::class, 'getInvoiceAnnually'])->name('annually')->middleware(Owner::class);
+    Route::get('/export_invoice/{month}', [DetailRekapController::class, 'exportToExcel'])->name('rekap.export')->middleware(Owner::class);
+    Route::get('/export_invoice/{year}', [DetailRekapController::class, 'exportToExcel'])->name('rekap.export')->middleware(Owner::class);
 });
