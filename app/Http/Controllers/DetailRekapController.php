@@ -87,13 +87,15 @@ class DetailRekapController extends Controller
             foreach ($transactions as $value) {
                 $totalHarga[$key] = isset($totalHarga[$key]) ? $totalHarga[$key] + $value->total : $value->total;
                 $total += $value->total;
+                $currentYear = date('Y');
+                $monthNumber = date('m');
             }
 
             $data[$key] = $transactions;
         }
 
         $currentYear = $year;
-        return view('detailrekap.showChoosen', compact('invoices', 'data', 'totalHarga', 'currentYear', 'total'));
+        return view('detailrekap.showChoosen', compact('invoices', 'data', 'totalHarga', 'currentYear', 'monthNumber', 'total'));
     }
 
 
