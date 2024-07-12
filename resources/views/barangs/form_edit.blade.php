@@ -21,7 +21,7 @@
                             <input type="text" class="form-control" name="nama_barang" value="{{$barang->nama_barang}}">
                         </div>
                         <div class="form-group">
-                            <label>Harga</label>
+                            <label>Harga (Per Bal)</label>
                             <input type="number" min="0" step="1" class="form-control" name="harga" value="{{$barang->harga}}">
                         </div>
                         <button type="submit" class="btn btn-primary col-1">Submit</button>

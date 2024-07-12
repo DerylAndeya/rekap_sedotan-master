@@ -26,7 +26,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama</th>
-                                    <th>Harga</th>
+                                    <th>Harga (Per Bal)</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

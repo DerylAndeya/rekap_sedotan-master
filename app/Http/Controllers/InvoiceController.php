@@ -19,16 +19,25 @@ class InvoiceController extends Controller
      */
 
      public function index(Request $request)
-     {
-         if ($request){
+{
+    $sortField = $request->get('sort', 'tanggal');
+    $sortDirection = $request->get('direction', 'asc');
 
-             $data=Invoice::search($request->search)->paginate(10);
-             return view('invoice/home')->with('items', $data);
+    if ($request->has('search')) {
+        $data = Invoice::search($request->search)
+                        ->orderBy($sortField, $sortDirection)
+                        ->paginate(10);
+    } else {
+        $data = Invoice::orderBy($sortField, $sortDirection)
+                        ->paginate(10);
+    }
 
-         }
-         $data = Invoice::paginate(10);
-         return view('invoice/home')->with('items', $data);
-     }
+    return view('invoice.home')->with([
+        'items' => $data,
+        'sortField' => $sortField,
+        'sortDirection' => $sortDirection,
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -97,7 +106,7 @@ class InvoiceController extends Controller
     {
 
         $validatedData = $request->validate([
-            'tanggal' => 'required|date|date_format:Y-m-d|after_or_equal:' . Carbon::today()->format('Y-m-d'),
+            'tanggal' => 'required|date|date_format:Y-m-d',
             'is_cash' => 'required|boolean',
             'FK_bank' => 'required|exists:bank,id',
             'FK_pegawai' => 'required|exists:users,id',

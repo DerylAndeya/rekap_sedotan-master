@@ -113,7 +113,7 @@ return new class extends Migration
         Schema::dropIfExists('transaksi');
         Schema::dropIfExists('bank');
         Schema::dropIfExists('pengirim');
-        Schema::dropIfExists('pengirim');
+        Schema::dropIfExists('penerima');
         Schema::dropIfExists('tanda_terima');
     }
 };

@@ -16,7 +16,6 @@ class DetailRekapController extends Controller
 
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
-
     ];
     private $currentYear, $threshold;
 
@@ -100,56 +99,62 @@ class DetailRekapController extends Controller
 
 
     public function exportToExcel(Request $request)
-    {
+{
+    // Get the selected month from the request
+    $selectedMonth = $request->month;
 
-        $invoices = Invoice::whereMonth('tanggal', $request->month)->get();
+    // Get the invoices for the selected month
+    $invoices = Invoice::whereMonth('tanggal', $selectedMonth)->get();
 
-        $spreadsheet = new Spreadsheet();
+    $spreadsheet = new Spreadsheet();
 
-        $spreadsheet->setActiveSheetIndex(0);
-        $sheet = $spreadsheet->getActiveSheet();
+    $spreadsheet->setActiveSheetIndex(0);
+    $sheet = $spreadsheet->getActiveSheet();
 
-        // Set headers
-        $sheet->setCellValue('A1', 'Nomor Invoice');
-        $sheet->setCellValue('B1', 'Pemesan');
-        $sheet->setCellValue('C1', 'Tanggal');
-        $sheet->setCellValue('D1', 'Nama Barang');
-        $sheet->setCellValue('E1', 'Harga');
-        $sheet->setCellValue('F1', 'Jumlah');
-        $sheet->setCellValue('G1', 'Sub-Total');
-        $sheet->setCellValue('H1', 'Total');
+    // Set headers
+    $sheet->setCellValue('A1', 'Nomor Invoice');
+    $sheet->setCellValue('B1', 'Pemesan');
+    $sheet->setCellValue('C1', 'Tanggal');
+    $sheet->setCellValue('D1', 'Nama Barang');
+    $sheet->setCellValue('E1', 'Harga');
+    $sheet->setCellValue('F1', 'Jumlah');
+    $sheet->setCellValue('G1', 'Sub-Total');
+    $sheet->setCellValue('H1', 'Total');
 
-        $row = 2;
+    $row = 2;
 
-        foreach ($invoices as $ivc) {
-            $transaksiTiapInvoice = Transaksi::where('fk_kode_invoice', $ivc['id'])->get();
-            $total = 0;
-            foreach ($transaksiTiapInvoice as $transaksi) {
-                $subTotal = $transaksi->jumlah * $transaksi->barang->harga;
-                $total += $subTotal;
-                $sheet->setCellValue('A' . $row, $ivc->nomor_invoice);
-                $sheet->setCellValue('B' . $row, $ivc->pemesan->nama_pemesan);
-                $sheet->setCellValue('C' . $row, $ivc->tanggal);
-                $sheet->setCellValue('D' . $row, $transaksi->barang->nama_barang);
-                $sheet->setCellValue('E' . $row, $transaksi->barang->harga);
-                $sheet->setCellValue('F' . $row, $transaksi->jumlah);
-                $sheet->setCellValue('G' . $row, $subTotal);
-                $sheet->setCellValue('H' . $row, $total);
-                $row++;
-            }
+    foreach ($invoices as $ivc) {
+        $transaksiTiapInvoice = Transaksi::where('fk_kode_invoice', $ivc['id'])->get();
+        $total = 0;
+        foreach ($transaksiTiapInvoice as $transaksi) {
+            $subTotal = $transaksi->jumlah * $transaksi->barang->harga;
+            $total += $subTotal;
+            $sheet->setCellValue('A' . $row, $ivc->nomor_invoice);
+            $sheet->setCellValue('B' . $row, $ivc->pemesan->nama_pemesan);
+            $sheet->setCellValue('C' . $row, $ivc->tanggal);
+            $sheet->setCellValue('D' . $row, $transaksi->barang->nama_barang);
+            $sheet->setCellValue('E' . $row, $transaksi->barang->harga);
+            $sheet->setCellValue('F' . $row, $transaksi->jumlah);
+            $sheet->setCellValue('G' . $row, $subTotal);
+            $sheet->setCellValue('H' . $row, $total);
             $row++;
         }
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $date = date('Y-M');
-        $filename = 'InvoiceBulanan_' . $date . '.xlsx';
-        header('Content-Disposition: attachment;filename="' . $filename . '"');
-        header('Cache-Control: max-age=0');
-
-        // Create Excel writer
-        $writer = new Xlsx($spreadsheet);
-
-        // Save the file to output
-        $writer->save('php://output');
+        $row++;
     }
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    // Convert the selected month to a readable format
+    $dateObj   = \DateTime::createFromFormat('!m', $selectedMonth);
+    $monthName = $dateObj->format('F');
+    $filename = 'InvoiceBulanan_' . $monthName . '.xlsx';
+    header('Content-Disposition: attachment;filename="' . $filename . '"');
+    header('Cache-Control: max-age=0');
+
+    // Create Excel writer
+    $writer = new Xlsx($spreadsheet);
+
+    // Save the file to output
+    $writer->save('php://output');
+}
+
 }

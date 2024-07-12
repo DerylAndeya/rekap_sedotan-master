@@ -140,7 +140,7 @@
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Balance</h4>
+                            <h4>Today's Balance</h4>
                         </div>
                         <div class="card-body">
                             @money($totalRevenue)
@@ -168,7 +168,7 @@
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Sales</h4>
+                            <h4>Today Sales (Per Bal)</h4>
                         </div>
                         <div class="card-body">
                             {{ $totalSales }}

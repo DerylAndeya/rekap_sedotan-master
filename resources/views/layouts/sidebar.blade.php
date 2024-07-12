@@ -31,7 +31,7 @@
         </li>
         <li class="nav-item dropdown">
             <a href="{{route('invoice.index')}}" class="nav-link"><i class="fas fa-columns"></i>
-                <span>Invoice</span></a>
+                <span>Penjualan</span></a>
         </li>
         @endcan
         <ul class="dropdown-menu">

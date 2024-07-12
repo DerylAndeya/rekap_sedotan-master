@@ -33,7 +33,7 @@
                     </select>
             </div>
             <div class="form-group">
-                <label for="message-text" class="col-form-label">Quantity</label>
+                <label for="message-text" class="col-form-label">Quantity (Per Bal)</label>
                 <input type="number" min=0 class="form-control" name="jumlah">
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
@@ -112,7 +112,7 @@
                                         <th data-width="40">#</th>
                                         <th class="text-center">Item</th>
                                         <th class="text-center">Price</th>
-                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Quantity (Per Bal)</th>
                                         <th class="text-right">Totals</th>
                                         <th class="text-right">Remove</th>
                                     </tr>
@@ -152,17 +152,17 @@
                             <div class="col-lg-4 text-right">
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Subtotal</div>
-                                    <div class="invoice-detail-value">Rp {{$total}} </div>
+                                    <div class="invoice-detail-value">Rp {{ number_format($total, 0, ',', '.') }}</div>
                                 </div>
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Shipping</div>
-                                    <div class="invoice-detail-value">Rp {{ 0 }}</div>
+                                    <div class="invoice-detail-value">Rp {{ number_format(0, 0, ',', '.') }}</div>
                                 </div>
                                 <hr class="mt-2 mb-2">
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Total</div>
-                                    <div class="invoice-detail-value invoice-detail-value-lg">Rp {{$total}}</div>
-                                </div>
+                                    <div class="invoice-detail-value invoice-detail-value-lg">Rp {{ number_format($total, 0, ',', '.') }}</div>
+                                </div>  
                             </div>
                         </div>
                     </div>
