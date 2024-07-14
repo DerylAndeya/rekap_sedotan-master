@@ -16,6 +16,7 @@
                     <h4>LIST INVOICE</h4>
                     <div class="card-header-action">
                         <a href="{{ route('nota_baru.create') }}" class="btn btn-primary">Nota Kosong</a>
+                        <a href="{{ route('invoice.create') }}" class="btn btn-primary">Tambah Baru</a>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -24,18 +25,7 @@
                             <thead>
                                 <tr>
                                     <th>Nomor</th>
-                                    <th>
-                                        <a href="{{ route('invoice.index', array_merge(request()->query(), ['sort' => 'tanggal', 'direction' => $sortDirection == 'asc' ? 'desc' : 'asc'])) }}">
-                                            Tanggal
-                                            @if ($sortField == 'tanggal')
-                                                @if ($sortDirection == 'asc')
-                                                    <i class="fas fa-sort-up"></i>
-                                                @else
-                                                    <i class="fas fa-sort-down"></i>
-                                                @endif
-                                            @endif
-                                        </a>
-                                    </th>
+                                    <th>Tanggal</th>
                                     <th>Metode</th>
                                     <th>Bank</th>
                                     <th>Pegawai</th>

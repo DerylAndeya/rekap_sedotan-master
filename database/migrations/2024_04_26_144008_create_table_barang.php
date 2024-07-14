@@ -46,11 +46,11 @@ return new class extends Migration
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_invoice');
-            $table->date('tanggal');
-            $table->boolean('is_cash'); // 1(true) = cash, 0(false) = transfer
-            $table->unsignedBigInteger('FK_bank');
-            $table->unsignedBigInteger('FK_pegawai');
-            $table->unsignedBigInteger('FK_pemesan');
+            $table->date('tanggal')->nullable();
+            $table->boolean('is_cash')->nullable(); // 1(true) = cash, 0(false) = transfer
+            $table->unsignedBigInteger('FK_bank')->nullable();
+            $table->unsignedBigInteger('FK_pegawai')->nullable();
+            $table->unsignedBigInteger('FK_pemesan')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -113,7 +113,7 @@ return new class extends Migration
         Schema::dropIfExists('transaksi');
         Schema::dropIfExists('bank');
         Schema::dropIfExists('pengirim');
-        Schema::dropIfExists('penerima');
+        Schema::dropIfExists('pengirim');
         Schema::dropIfExists('tanda_terima');
     }
 };
