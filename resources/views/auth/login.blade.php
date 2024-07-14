@@ -50,19 +50,8 @@
               </button>
             </div>
           </form>
+
           
-          <div class="row sm-gutters">
-            <div class="col-6">
-              <a class="btn btn-block btn-social btn-facebook">
-                <span class="fab fa-facebook"></span> Facebook
-              </a>
-            </div>
-            <div class="col-6">
-              <a class="btn btn-block btn-social btn-twitter">
-                <span class="fab fa-twitter"></span> Twitter
-              </a>
-            </div>
-          </div>
 
         </div>
       </div>
