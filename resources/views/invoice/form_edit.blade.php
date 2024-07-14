@@ -9,6 +9,9 @@
 
     <div class="section-body">
         <div class="card">
+            <div class="card">
+                <div class="back"></br><button type="button" class="btn btn-primary ml-2" onclick="window.location.href='{{ route('bank.index') }}'">Back</button>
+                    </div>
             <div class="card-header">
                 <h4>Input Text</h4>
             </div>

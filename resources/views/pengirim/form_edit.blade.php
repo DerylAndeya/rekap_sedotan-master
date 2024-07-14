@@ -9,6 +9,9 @@
 
         <div class="section-body">
             <div class="card">
+                <div class="card">
+                    <div class="back"></br><button type="button" class="btn btn-primary ml-2" onclick="window.location.href='{{ route('pengirim.index') }}'">Back</button>
+                        </div>
                 <div class="card-header">
                   <h4>Input Text</h4>
                 </div>
@@ -18,7 +21,12 @@
                         @method('PATCH')
                         <div class="form-group">
                             <label>Pengirim</label>
-                            <input type="text" class="form-control" name="nama_pengirim" value="{{$pengirim->nama_pengirim}}">
+                            <input type="text" class="form-control @error('nama_pengirim') is-invalid @enderror" name="nama_pengirim" value="{{$pengirim->nama_pengirim}}">
+                            @error('nama_pengirim')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <button type="submit" class="btn btn-primary col-1">Submit</button>
                         </div>

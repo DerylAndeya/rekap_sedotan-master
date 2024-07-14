@@ -37,6 +37,8 @@ class PegawaiController extends Controller
 
         $validated_data=$request->validate([
             'nama_pegawai'=>'required',
+        ], [
+            'nama_pegawai.required' => 'Nama Pegawai harus diisi',
         ]);
 
         Pegawai::create($validated_data);
@@ -67,6 +69,8 @@ class PegawaiController extends Controller
     {
         $request->validate([
             'nama_pegawai' => 'required|string|max:255',
+        ], [
+            'nama_pegawai.required' => 'Nama Pegawai harus diisi',
         ]);
 
 

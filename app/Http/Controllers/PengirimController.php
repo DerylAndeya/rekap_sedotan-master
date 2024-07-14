@@ -39,6 +39,8 @@ class PengirimController extends Controller
     {
         $validated_data=$request->validate([
             'nama_pengirim'=>'required',
+        ],[
+            'nama_pengirim.required' => 'Nama Pengirim harus diisi'
         ]);
         Pengirim::create($validated_data);
 
@@ -70,6 +72,8 @@ class PengirimController extends Controller
     {
         $request->validate([
             'nama_pengirim' => 'required|string|max:255',
+        ],[
+            'nama_pengirim.required' => 'Nama Pengirim harus diisi'
         ]);
 
 

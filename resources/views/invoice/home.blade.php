@@ -6,16 +6,16 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Invoice</h1>
+            <h1>Penjualan</h1>
         </div>
 
         <div class="section-body">
 
             <div class="card">
                 <div class="card-header">
-                    <h4>LIST INVOICE</h4>
+                    <h4>LIST PENJUALAN</h4>
                     <div class="card-header-action">
-                        <a href="{{ route('nota_baru.create') }}" class="btn btn-primary">Nota Kosong</a>
+                        <a href="{{ route('nota_baru.create') }}" class="btn btn-primary">Invoice Kosong</a>
                     </div>
                 </div>
                 <div class="card-body p-0">

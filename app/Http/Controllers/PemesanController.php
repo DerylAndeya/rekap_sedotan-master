@@ -34,18 +34,26 @@ class PemesanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request){//
+    public function store(Request $request)
+{
+    $validated_data = $request->validate([
+        'nama_pemesan' => 'required',
+        'alamat' => 'required',
+        'no_telp' => 'required|numeric',
+        'kota' => 'required',
+    ], [
+        'nama_pemesan.required' => 'Nama Pemesan harus diisi',
+        'alamat.required' => 'Alamat harus diisi',
+        'no_telp.required' => 'No Telepon harus diisi',
+        'no_telp.numeric' => 'No Telepon harus berupa angka',
+        'kota.required' => 'Kota harus diisi',
+    ]);
 
-        $validated_data=$request->validate([
-            'nama_pemesan'=>'required',
-            'alamat'=>'required',
-            'no_telp'=>'required',
-            'kota'=>'required',
-        ]);
-        Pemesan::create($validated_data);
+    Pemesan::create($validated_data);
 
-        return redirect()->route('pemesan.index')->with('success','data berhasil disimpan');
-    }
+    return redirect()->route('pemesan.index')->with('success', 'Data berhasil disimpan');
+}
+
 
     /**
      * Display the specified resource.
@@ -71,8 +79,13 @@ class PemesanController extends Controller
         $request->validate([
             'nama_pemesan' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
-            'no_telp' => 'required|string|max:255',
+            'no_telp' => 'required|numeric',
             'kota' => 'required|string',
+        ], [
+            'nama_pemesan.required' => 'Nama Pemesan harus diisi',
+            'alamat.required' => 'Alamat harus diisi',
+            'no_telp.required' => 'No Telepon harus diisi',
+            'kota.required' => 'Kota harus diisi',
         ]);
 
 

@@ -39,6 +39,8 @@ class PenerimaController extends Controller
     {
         $validated_data=$request->validate([
             'nama_penerima'=>'required',
+        ],[
+            'nama_penerima' => 'Nama Penerima harus diisi',
         ]);
         Penerima::create($validated_data);
 
@@ -70,6 +72,8 @@ class PenerimaController extends Controller
     {
         $request->validate([
             'nama_penerima' => 'required|string|max:255',
+        ],[
+            'nama_penerima' => 'Nama Penerima harus diisi',
         ]);
 
 

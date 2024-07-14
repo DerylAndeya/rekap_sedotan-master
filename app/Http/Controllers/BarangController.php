@@ -34,6 +34,9 @@ class BarangController extends Controller
         $validated_data = $request->validate([
             'nama_barang' => 'required',
             'harga' => 'required',
+        ], [
+            'nama_barang.required' => 'Nama Barang harus diisi',
+            'harga.required' => 'Harga harus diisi',
         ]);
 
         Barang::create($validated_data);
@@ -65,6 +68,9 @@ class BarangController extends Controller
         $request->validate([
             'nama_barang' => 'required|string|max:255',
             'harga' => 'required|numeric'
+        ], [
+            'nama_barang.required' => 'Nama Barang harus diisi',
+            'harga.required' => 'Harga harus diisi',
         ]);
 
 

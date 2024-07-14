@@ -37,8 +37,10 @@ class JenisKendaraanController extends Controller
     public function store(Request $request){//
 
         $validated_data=$request->validate([
-            'nama_jenis'=>'required',
-        ]);
+            'nama_jenis' => 'required',
+    ], [
+        'nama_jenis.required' => 'Jenis Kendaraan harus diisi',
+    ]);
 
 
         jenis_kendaraan::create($validated_data);
@@ -69,6 +71,8 @@ class JenisKendaraanController extends Controller
     {
         $request->validate([
             'nama_jenis' => 'required|string|max:255',
+        ], [
+            'nama_jenis.required' => 'Jenis Kendaraan harus diisi',
         ]);
 
 

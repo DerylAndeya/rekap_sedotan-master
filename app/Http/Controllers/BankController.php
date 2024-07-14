@@ -39,8 +39,10 @@ class BankController extends Controller
     public function store(Request $request)
     {
         $validated_data=$request->validate([
-            'nama_bank'=>'required',
-        ]);
+            'nama_bank' => 'required',
+    ], [
+        'nama_bank.required' => 'Nama Bank harus diisi',
+    ]);
 
         Bank::create($validated_data);
 
@@ -69,6 +71,8 @@ class BankController extends Controller
     {
         $request->validate([
             'nama_bank' => 'required|string|max:255',
+        ], [
+            'nama_bank.required' => 'Nama Bank harus diisi',
         ]);
 
 
