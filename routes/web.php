@@ -47,4 +47,5 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/export_invoice/{year}', [DetailRekapController::class, 'exportToExcel'])->name('rekap.export')->middleware(Owner::class);
 
     Route::post('/nota_baru/userStore/{id}',[notaBaruController::class,'userStore'])->name('nota_baru.userStore')->middleware(Admin::class);
+    Route::post('/nota_baru/TransaksiStore/{id}',[notaBaruController::class,'TransactionStore'])->name('nota_baru.store_transaksi')->middleware(Admin::class);
 });

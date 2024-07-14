@@ -54,28 +54,32 @@
     </div>
 
     <div class="section-body">
+
         <div class="invoice">
-            <div class="invoice-print">
+            <div class="card">
+            <div class="back mb-3"></br><button type="button" class="btn btn-primary ml-2" onclick="window.location.href='{{ route('invoice.index') }}'">Back</button>
+            </div>
+                <div class="invoice-print">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="invoice-title">
                             <h2>Invoice</h2>
-                            <div class="invoice-number">Order #{{ $invoice->nomor_invoice}}</div>
+                            <div class="invoice-number">Order #{{($invoice->nomor_invoice)}}</div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-md-6">
                                 <address>
                                     <strong>Billed To:</strong><br>
-                                    {{ $invoice->pemesan->nama_pemesan }}<br>
-                                    {{ $invoice->pemesan->kota }}, Indonesia<br>
+                                    {{ optional ($invoice->pemesan)->nama_pemesan ?? 'N/A'}}<br>
+                                    {{ optional ($invoice->pemesan)->kota ?? 'N/A'}}, Indonesia<br>
                                 </address>
                             </div>
                             <div class="col-md-6 text-md-right">
                                 <address>
                                     <strong>Shipped To:</strong><br>
-                                    {{ $invoice->pemesan->nama_pemesan }}<br>
-                                    {{ $invoice->pemesan->kota }}
+                                    {{ optional ($invoice->pemesan)->nama_pemesan ?? 'N/A'}}<br>
+                                    {{ optional ($invoice->pemesan)->kota ?? 'N/A'}}
                                 </address>
                             </div>
                         </div>
@@ -83,13 +87,13 @@
                             <div class="col-md-6">
                                 <address>
                                     <strong>Payment Method:</strong><br>
-                                    {{$invoice->is_cash ? 'Cash' : 'Transfer' }}<br><br>
+                                    {{ optional ($invoice->is_cash) ? 'Cash' : 'Transfer' ?? 'N/A' }}<br><br>
                                 </address>
                             </div>
                             <div class="col-md-6 text-md-right">
                                 <address>
                                     <strong>Order Date:</strong><br>
-                                    {{$invoice->tanggal}}<br><br>
+                                    {{ optional($invoice->tanggal)->toDateString() ?? 'N/A' }}<br><br>
                                 </address>
                             </div>
                         </div>
@@ -123,10 +127,13 @@
                                     @foreach ($transaksi as $index => $t)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td class="text-center">{{ $t->barang->nama_barang }}</td>
-                                        <td class="text-center">{{ $t->barang->harga }}</td>
-                                        <td class="text-center">{{ $t->jumlah }}</td>
-                                        <td class="text-right">{{ $t->jumlah * $t->barang->harga }}</td>
+                                        <td class="text-center">{{ optional ($t->barang)->nama_barang ?? 'N/A'}}</td>
+                                        <td class="text-center">{{ optional ($t->barang)->harga ?? 'N/A'}}</td>
+                                        <td class="text-center">{{($t->jumlah)}}</td>
+                                        <td class="text-right">
+                                            {{ optional($t->jumlah) && optional($t->barang)->harga ? $t->jumlah * $t->barang->harga : 'N/A' }}
+                                        </td>
+
                                         <td class="text-right">
                                             <form action="{{ route('transaksi.destroy', $t) }}" method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this item?');">
@@ -162,7 +169,7 @@
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Total</div>
                                     <div class="invoice-detail-value invoice-detail-value-lg">Rp {{ number_format($total, 0, ',', '.') }}</div>
-                                </div>  
+                                </div>
                             </div>
                         </div>
                     </div>

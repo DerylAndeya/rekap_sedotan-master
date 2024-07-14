@@ -14,7 +14,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('transaksi.store') }}" method="post">
+                    <form action="{{ route('nota_baru.store_transaksi', ['id' => $invoice->id]) }}" method="post">
                         @csrf
                         <div class=" form-group">
                             <label>Barang</label>
@@ -161,10 +161,10 @@
                                                 <select name="is_cash"
                                                     class="form-control select2 select2-hidden-accessible" tabindex="-1"
                                                     aria-hidden="true" id="isCash">
+                                                    <option value="1"
+                                                        @if ($invoice->is_cash == 1) selected @endif>Cash</option>
                                                     <option value="0"
-                                                        @if ($invoice->is_cash == 0) selected @endif>Cash</option>
-                                                    <option value="0"
-                                                        @if ($invoice->is_cash == 1) selected @endif>Transfer</option>
+                                                        @if ($invoice->is_cash == 0) selected @endif>Transfer</option>
                                                 </select>
 
                                             </div>
@@ -205,7 +205,7 @@
                                                     <input type="date"
                                                         class="form-control datepicker @error('tanggal') is-invalid @enderror"
                                                         name="tanggal"
-                                                        value="{{ old('tanggal', $invoice->tanggal ?? '') }}"
+                                                        value="{{ $invoice->tanggal ? $invoice->tanggal : \Carbon\Carbon::now()->toDateString() }}"
                                                         id="tanggal" />
 
                                                 </div>
@@ -258,7 +258,7 @@
                                                     <td class="text-center">{{ $t->jumlah }}</td>
                                                     <td class="text-right">{{ $t->jumlah * $t->barang->harga }}</td>
                                                     <td class="text-right">
-                                                        <form action="{{ route('transaksi.destroy', $t) }}" method="POST"
+                                                        <form action="{{ route('nota_baru.destroy', $t) }}" method="POST"
                                                             onsubmit="return confirm('Are you sure you want to delete this item?');">
                                                             @csrf
                                                             @method('DELETE')
@@ -324,12 +324,18 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script> --}}
     <script>
         // get value from select option
+        let is_cash = @json($invoice->is_cash)
         $(document).ready(function() {
-            $('#bank').hide();
-            $('#isCash').on('change', function() {
-                var isCash = $(this).val();
+        console.log(is_cash)
+        if(is_cash == 0) {
+         // copy paste from blade
+         $('#bank').hide();
+        }
+         $('#isCash').on('change', function() {
+             var isCash = $(this).val();
                 if (isCash == 0) {
                     $('#bank').show();
+                 
                 } else {
                     $('#bank option[value="1"]').attr('selected', 'selected');
                     $('#bank').hide();

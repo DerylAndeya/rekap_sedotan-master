@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bank;
+use App\Models\Transaksi;
 use App\Models\Barang;
 use App\Models\Invoice;
 use App\Models\Pemesan;
@@ -25,6 +26,8 @@ class notaBaruController extends Controller
      */
     public function create()
     {
+        // $nampung= Carbon::now()->toDateString();
+        // dd($nampung);
 
         $newEmptyInvoice = new Invoice();
 
@@ -72,8 +75,10 @@ class notaBaruController extends Controller
         $banks = Bank::all();
 
         $pemesan = Pemesan::all();
+        $data = Transaksi::where('FK_kode_invoice', $id)
+            ->get();
 
-        return view('nota_baru/home')->with(['barangs' => $barangs, 'banks' => $banks, 'pemesans' => $pemesan, 'invoice' => $invoice]);
+        return view('nota_baru/home')->with(['transaksi' => $data,'barangs' => $barangs, 'banks' => $banks, 'pemesans' => $pemesan, 'invoice' => $invoice]);
     }
 
     /**
@@ -106,7 +111,11 @@ class notaBaruController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $transaksi = Transaksi::find($id);
+        $ids = $transaksi->invoice->id;
+        $transaksi->delete();
+
+        return redirect()->route('nota_baru.edit', ['nota_baru' => $ids])->with('success', 'data berhasil disimpan');
     }
 
     public function userStore(Request $request, String $id)
@@ -123,5 +132,25 @@ class notaBaruController extends Controller
         $invoice=Invoice::find($id);
 
         return redirect()->route('nota_baru.edit' ,['nota_baru' => $invoice])->with('success', 'data berhasil disimpan');
+    }
+
+    public function TransactionStore(Request $request)
+    {
+        $validated_data = $request->validate([
+            'FK_kode_invoice' => 'required',
+            'FK_kode_barang' => 'required',
+            'jumlah' => 'required',
+        ]);
+
+        $transaction = Transaksi::where('fk_kode_invoice', '=', $validated_data['FK_kode_invoice'])
+            ->where('fk_kode_barang', '=', $validated_data['FK_kode_barang'])->first();
+        if ($transaction) {
+            $transaction->jumlah += $validated_data['jumlah'];
+            $transaction->update();
+        } else {
+            Transaksi::create($validated_data);
+        }
+
+        return redirect()->route('nota_baru.edit', ['nota_baru' => $validated_data['FK_kode_invoice']])->with('success', 'data berhasil disimpan');
     }
 }

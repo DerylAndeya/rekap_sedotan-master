@@ -59,10 +59,11 @@
                                                 <a href="{{ route('nota_baru.edit', ['nota_baru' => $i->id]) }}"
                                                     class="btn btn-primary btn-action mr-1" data-toggle="tooltip" title=""
                                                     data-original-title="Edit"><i class="fas fa-pencil-alt"></i></a>
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger"><i
-                                                        class="fas fa-trash"></i></button>
+                                                    <form action="{{ route('invoice.destroy', ['invoice' => $i]) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                                        </form>
                                             </td>
                                             <td>
                                                 <a href="{{ route('transaksi.index', ['id' => $i->id]) }}"
